@@ -1,5 +1,5 @@
 import torch
-from transformers import GPT2Tokenizer, GPT2Model, AdamW, get_linear_schedule_with_warmup
+from transformers import GPT2Tokenizer, GPT2Model, AdamW, get_linear_schedule_with_warmup, pipeline
 from torch.utils.data import Dataset, DataLoader
 from tqdm import tqdm, trange
 
@@ -72,12 +72,28 @@ def train(
     return model
 
 
-# use jsonlines, TODO
+# Function to generate multiple sentences. Test data should be a list of strings
+def text_generation(test_data):
+    generated_text = []
+    for i in range(len(test_data)):
+        generator = pipeline('text-generation', model=trainedmodel)
+        x = generator(test_data[i], max_length=30, num_return_sequences=1)
+        generated_text.append(x)
+    return generated_text
+
+
+
+
+
+
+
+#TODO adapt into jsonlines
+#obtain training data and format it into an array of strings
 with open('C:/Users/Antoine/Desktop/UNI/Master/Sem2/ML/MLP2/e-CARE-main/dataset/Explanation_Generation/train.jsonl',
           'r') as json_file:
     json_list = list(json_file)
-
 json_list = [x.replace('"', '').replace(",", '').replace("{", '').replace("}", '').split(' ', 2)[2] for x in json_list]
+#printing first string for format checking
 print(json_list[0])
 
 tokenizer = GPT2Tokenizer.from_pretrained('gpt2')
@@ -86,4 +102,17 @@ dataset = []
 for elem in json_list:
     dataset.append(torch.tensor(tokenizer.encode(elem)))
 
-model = train(dataset, model, tokenizer)
+trainedmodel = train(dataset, model, tokenizer)
+
+#obtaining test set
+
+with open('C:/Users/Antoine/Desktop/UNI/Master/Sem2/ML/MLP2/e-CARE-main/dataset/Explanation_Generation/dev.jsonl',
+          'r') as json_file:
+    json_testlist = list(json_file)
+
+json_testlist = [x.replace('"', '').replace(",", '').replace("{", '').replace("}", '').split(' ', 2)[2] for x in json_testlist]
+print(json_testlist[0])
+
+
+#TODO prim generations for comparisons
+generated_text = text_generation(json_testlist)

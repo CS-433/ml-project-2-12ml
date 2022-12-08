@@ -1,4 +1,5 @@
 import torch
+from transformers import AutoTokenizer, AutoModelForCausalLM
 from transformers import GPT2Tokenizer, GPT2Model, AdamW, get_linear_schedule_with_warmup, pipeline
 from torch.utils.data import Dataset, DataLoader
 from tqdm import tqdm, trange
@@ -96,8 +97,8 @@ json_list = [x.replace('"', '').replace(",", '').replace("{", '').replace("}", '
 #printing first string for format checking
 print(json_list[0])
 
-tokenizer = GPT2Tokenizer.from_pretrained('gpt2')
-model = GPT2Model.from_pretrained('gpt2')
+tokenizer = AutoTokenizer.from_pretrained('gpt2')
+model = AutoModelForCausalLM.from_pretrained('gpt2')
 dataset = []
 for elem in json_list:
     dataset.append(torch.tensor(tokenizer.encode(elem)))

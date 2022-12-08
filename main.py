@@ -76,7 +76,7 @@ def train(
 def text_generation(test_data):
     generated_text = []
     for i in range(len(test_data)):
-        generator = pipeline('text-generation', model=trainedmodel)
+        generator = pipeline('text-generation', model=trainedmodel, tokenizer=tokenizer)
         x = generator(test_data[i], max_length=30, num_return_sequences=1)
         generated_text.append(x)
     return generated_text
@@ -116,3 +116,4 @@ print(json_testlist[0])
 
 #TODO prim generations for comparisons
 generated_text = text_generation(json_testlist)
+print(generated_text[0])

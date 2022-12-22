@@ -4,7 +4,7 @@ We evaluate three models in this experiment:
 
 * GPT-3 (`text-davinci-003`): `run_gpt3.ipynb`, `run_gpt3.py`, `process_results.py`
 
-* GPT-Neo, GPT-2: `harness.py`
+* GPT-Neo, GPT-2: `harness.ipynb`
 
 ## GPT-3
 
@@ -19,5 +19,5 @@ Nevertheless, the code logic of those three files should be as close as possible
 ## EleutherAI's Language Model Evaluation Harness
 
 For convenience, we use their code to test zero-shot and few-shot learning for GPT-2 and GPT-Neo.
-However, for evaluation on e-CARE, some modifications to their code is required. Please see `harness.py` for more details.
+However, for evaluation on e-CARE, some modifications to their code is required. Please see `harness.ipynb` for more details.
 Please note that this notebook requires a GPU, and is thus best run on Colab.

@@ -1,0 +1,15 @@
+datasets
+evaluate
+transformers[sentencepiece]
+torch
+torchvision
+torchaudio
+pandas
+numpy
+scikit-learn
+sqlitedict
+sacrebleu
+pycountry
+rouge-score
+pytablewriter
+openai

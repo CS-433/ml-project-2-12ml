@@ -39,3 +39,7 @@ The general code flow of a notebook is:
 
 Please refer to each aforementioned directory for more details.
 Please note that the notebooks might not work smoothly when running locally because they are designed for usage on Colab.
+
+We also provide `requirements.txt`, a list of necessary packages to run the code.
+Please note that this is just a reference list since we run the code on Colab, in which there are a lot of pre-installed packages.
+So we are not sure whether the list is exhaustive or not.

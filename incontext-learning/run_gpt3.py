@@ -16,7 +16,8 @@ curr_prompt_idx = 0 # for interacting with OpenAI API
 
 
 class Prompter:
-    # class for constructing prompts
+    """Convenience class for constructing prompts"""
+
     def __init__(self, train_set, k_shot=0, explain=False):
         self.conjunction = {
             "effect": ", therefore",
@@ -31,6 +32,8 @@ class Prompter:
         self.explain = explain
 
     def construct_instance(self, datapoint, give_answer=False, prepend=False):
+        """Constructs a single question-answer instance."""
+
         premise = self.convert_premise(datapoint["premise"])
         qa_instance = ""
         if prepend:
@@ -48,12 +51,16 @@ class Prompter:
         return qa_instance
 
     def get_k_train_examples(self):
+        """Generates k few-shot examples"""
+
         i = np.random.randint(0, 100, self.k_shot).tolist()
         d = self.train_set[i]
         d = [dict(zip(d, col)) for col in zip(*d.values())]
         return [self.construct_instance(example, give_answer=True, prepend=i==0) for i, example in enumerate(d)]
 
     def make_prompt(self, datapoint):
+        """Makes a single prompt from a datapoint"""
+
         train_examples = self.get_k_train_examples()
         query = self.construct_instance(datapoint)
         prompt = "" if self.k_shot > 0 else "Instruction: for each question, give the correct option (a) or (b).\n\n"
@@ -63,11 +70,12 @@ class Prompter:
         prompt += query
         return {"prompt": prompt}
 
-
     def convert_choice(self, choice):
+        """De-capitalizes the first character of the sentence"""
         return choice[0].lower() + choice[1:]
 
     def convert_premise(self, premise):
+        """Removes the full-stop at the end of the sentence"""
         return premise.strip()[:-1]
 
     def get_prompt_skeleton(self):
@@ -75,6 +83,10 @@ class Prompter:
 
 
 def get_gpt3_prediction(prompt):
+    """Makes a single call to the API and retrieves the response.
+    Temperature: higher value means more diverse generated text.
+    We do want more diverse generated causal explanations"""
+
     response = openai.Completion.create(
         model="text-davinci-003",
         prompt=prompt,
@@ -85,6 +97,8 @@ def get_gpt3_prediction(prompt):
 
 
 def prepare_ecare():
+    """Loads the e-CARE dataset and reformats it to HuggingFace Dataset"""
+
     with zipfile.ZipFile("e-CARE.zip") as z:
         with z.open("dataset/train_full.jsonl") as f:
             train_df = pd.read_json(f, lines=True)
@@ -104,12 +118,15 @@ def prepare_ecare():
 
 
 def prepare_copa():
+    """Loads the COPA dataset"""
+
     copa = datasets.load_dataset("super_glue", "copa")
     return copa["train"], copa["validation"]
 
 
 def get_prompts_with_labels(train_set, dev_set, k_shot, explain):
-    # gets prompts and label information
+    """Gets prompts together with labels"""
+
     prompter = Prompter(train_set, k_shot=k_shot, explain=explain)
     prompts = dev_set.map(
         prompter.make_prompt, batched=False,
@@ -119,8 +136,9 @@ def get_prompts_with_labels(train_set, dev_set, k_shot, explain):
 
 
 def run_gpt3(prompts):
-    # makes calls to OpenAI API and use their GPT-3 model
-    # best run in a notebook
+    """Makes calls to OpenAI API and use their GPT-3 model
+    Best run in a notebook"""
+
     global curr_prompt_idx
     gpt_preds = []
     prompts_submitted = {k: False for k in range(prompts.num_rows)}
@@ -147,6 +165,8 @@ def run_gpt3(prompts):
 
 
 def save_results(gpt_preds, prompts, k_shot=0, dataset="copa", explain=False, save_dir="."):
+    """Saves the GPT-3 generated texts and associated prompts to a pickle file"""
+
     for file_type, file_content in {"preds": gpt_preds, "prompts": prompts}.items():
         filename = f"{save_dir}/{'explain_' if explain else ''}gpt3_{dataset}_{file_type}_{k_shot}shot.bin"
         with open(filename, "wb") as f:

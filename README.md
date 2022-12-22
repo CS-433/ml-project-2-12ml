@@ -29,7 +29,7 @@ Because of this, each notebook is designed to be as self-contained and independe
 We provide the notebooks in both directories.
 The general code flow of a notebook is:
 
-1. It downloads the dataset and installs required packages
+1. It downloads the datasets and installs required packages
 
 2. It preprocesses the dataset
 

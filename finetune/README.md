@@ -19,15 +19,19 @@ In this project, fine-tuning for CCR is a binary classification problem.
 
 ## About `non_gpt2.ipynb`
 
+This notebook evaluates BERT and DeBERTa-v3.
+
 For models evaluated in this notebook, HuggingFace provides ready-made `...ForSequenceClassification` classes.
 But the gist of it is that model computes embeddings for the `[CLS]` token and feeds them to a linear layer for classification.
 We use HuggingFace's training utilities (`Trainer` and `TrainingArguments`) for convenience.
 
 ## About `gpt2.ipynb`
 
+This notebook evaluates GPT-2.
+
 To use GPT-2 for classification, we use the its embeddings for the first padding token.
 So we need to use `GPT2Model` to get those embeddings, and then add a linear layer on top of that for classification.
 The whole model pipeline is then fine-tuned via the use of HuggingFace's `Trainer` and `TrainingArguments`.
 
-Note that while there is a `GPT2ForSequenceClassification`, we chose to follow the e-CARE authors' implementation instead
+Note that while there is a `GPT2ForSequenceClassification`, we chose to follow the e-CARE authors' [implementation](https://github.com/Waste-Wood/e-CARE) instead
 because it yielded bette results.

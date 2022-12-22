@@ -5,7 +5,8 @@ import argparse
 
 
 def get_gpt_predicted_label(gpt_prediction):
-    # Get the predicted labels from GPT-3 generated text
+    """Get the predicted labels from GPT-3 generated text"""
+
     if "(a)" in gpt_prediction or "a)" in gpt_prediction or " a" == gpt_prediction[:2]:
         answer = 0
     elif "(b)" in gpt_prediction or "b)" in gpt_prediction or " b" == gpt_prediction[:2]:
@@ -16,7 +17,8 @@ def get_gpt_predicted_label(gpt_prediction):
 
 
 def load_results(results_dir=".", k_shot=0, dataset="copa", explain=False):
-    # lod pre-computed GPT-3 results
+    """load pre-computed GPT-3 results"""
+
     results = {}
     for file_type in ["preds"]: # there could be many kinds of results, but only preds for now
         filename = f"{results_dir}/{'explain_' if explain else ''}gpt3_{dataset}_{file_type}_{k_shot}shot.bin"
@@ -64,6 +66,11 @@ def evaluate_ecare(results_dir, k_shot=0, explain=False):
 
 
 def parse_args():
+    """k_shot: 0, 1, or 5
+    explain: True or False
+    dataset: copa or ecare
+    """
+
     parser = argparse.ArgumentParser()
     parser.add_argument("--k_shot", type=int, default=0)
     parser.add_argument("--explain", type=bool, default=False)
